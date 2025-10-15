@@ -1,0 +1,10 @@
+{
+  "name": "Raksha Plus",
+  "short_name": "RakshaPlus",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#f8f9fa",
+  "theme_color": "#e63946",
+  "description": "Safety app for women and children. SOS alerts and live location."
+  
+}
