@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="script.js">
   <title>Women Safety App - Registration</title>
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
   <style>
@@ -144,60 +145,6 @@
     <div id="successMsg" class="success">✅ Registration Successful!</div>
   </div>
 
-  <script>
-  const SUPABASE_URL = "https://mzypfqtaskdtohobobui.supabase.co";  
-  const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im16eXBmcXRhc2tkdG9ob2JvYnVpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA2MDExNjUsImV4cCI6MjA3NjE3NzE2NX0.2R2dy315Co006eq--MoHPJpaXDGY9V2TTszwh8y9bf0";  
-  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-  const addBtn = document.getElementById("addContact");
-  const emergencyContainer = document.getElementById("emergencyContainer");
-
-  addBtn.addEventListener("click", () => {
-    const div = document.createElement("div");
-    div.className = "emergency-group";
-    div.innerHTML = `
-      <input type="tel" name="emergency" placeholder="Emergency contact number" required>
-      <button type="button" class="remove-btn">X</button>
-    `;
-    emergencyContainer.appendChild(div);
-    div.querySelector(".remove-btn").addEventListener("click", () => div.remove());
-  });
-
-  document.getElementById("registrationForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const name = document.getElementById("name").value.trim();
-    const phone = document.getElementById("number").value.trim();
-
-    const emergencyInputs = document.querySelectorAll('input[name="emergency"]');
-    const emergencyNumbers = Array.from(emergencyInputs).map(i => i.value.trim()).filter(v => v);
-
-    if (!name || !phone || emergencyNumbers.length === 0) {
-      alert("⚠️ Please fill in all fields!");
-      return;
-    }
-
-    const { data, error } = await supabase.from("profiles").insert([{
-      name,
-      phone,
-      emergency_contact: emergencyNumbers
-    }]);
-
-    const msg = document.getElementById("successMsg");
-    if (error) {
-      alert("❌ Error: " + error.message);
-      console.error(error);
-    } else {
-      msg.style.display = "block";
-      document.getElementById("registrationForm").reset();
-      emergencyContainer.innerHTML = `
-        <div class="emergency-group">
-          <input type="tel" name="emergency" placeholder="Emergency contact number" required>
-        </div>`;
-      setTimeout(() => msg.style.display = "none", 3000);
-    }
-  });
-  </script>
-
+  
 </body>
 </html>
