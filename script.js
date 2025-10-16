@@ -101,32 +101,57 @@ function getUserLocation() {
 
 // SOS button click handler
 document.getElementById("sos-btn").addEventListener("click", async () => {
-    try {
-        // Get current location
-        const coords = await getUserLocation();
-        const lat = coords.latitude;
-        const lon = coords.longitude;
+  try {
+    // 1️⃣ Get current location
+    const coords = await getUserLocation();
+    const lat = coords.latitude;
+    const lon = coords.longitude;
 
-        // Prepare SOS message with Google Maps link
-        const message = `🚨 SOS! I need help! My location: https://www.google.com/maps?q=${lat},${lon}`;
+    // 2️⃣ Current user's phone number (replace with dynamic value if you have login)
+    const currentUserPhone = 'YOUR_PHONE_NUMBER'; // e.g., '918779759296'
 
-        // Emergency contacts (international format)
-        const contacts = ['918779759296']; // replace with your number or add more
+    // 3️⃣ Fetch latest profile record for this user
+    const { data, error } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("phone", currentUserPhone)  // ensures we get the current user's record
+      .order("created_at", { ascending: false })
+      .limit(1);
 
-        // Open WhatsApp for each contact
-        contacts.forEach(number => {
-            window.open(`https://wa.me/${number}?text=${encodeURIComponent(message)}`, '_blank');
-        });
-
-        // Optional: vibrate phone for feedback (mobile only)
-        if (navigator.vibrate) navigator.vibrate(500);
-
-        alert("SOS message ready to send on WhatsApp!");
-
-    } catch (err) {
-        alert("Could not get location: " + err.message);
+    if (error || !data || data.length === 0) {
+      alert("❌ Could not fetch profile: " + (error?.message || "No record found"));
+      return;
     }
+
+    const userProfile = data[0];
+
+    // 4️⃣ Prepare SOS message with Google Maps link
+    const message = `🚨 SOS! I need help! My location: https://www.google.com/maps?q=${lat},${lon}`;
+
+    // 5️⃣ Emergency contacts from the profile
+    const contacts = userProfile.emergency_contact; // should be an array
+    if (!contacts || contacts.length === 0) {
+      alert("⚠️ No emergency contacts found!");
+      return;
+    }
+
+    // 6️⃣ Open WhatsApp for each contact
+    contacts.forEach(number => {
+      window.open(`https://wa.me/${number}?text=${encodeURIComponent(message)}`, '_blank');
+    });
+
+    // 7️⃣ Optional: vibrate phone for feedback (mobile only)
+    if (navigator.vibrate) navigator.vibrate(500);
+
+    alert("SOS message ready to send on WhatsApp!");
+
+  } catch (err) {
+    alert("Could not get location: " + err.message);
+  }
 });
+
+
+
 // Profile button click event
 document.getElementById("profile-btn").addEventListener("click", () => {
   // Option 1: open a new page

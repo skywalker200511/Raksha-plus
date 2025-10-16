@@ -76,13 +76,6 @@
       margin-top: 10px;
     }
 
-    .remove-btn {
-      background-color: #999;
-      font-size: 12px;
-      margin-left: 10px;
-      padding: 6px 8px;
-    }
-
     .success {
       margin-top: 15px;
       color: green;
@@ -90,14 +83,37 @@
       display: none;
     }
 
+    /* Updated emergency group styles */
     .emergency-group {
       display: flex;
       align-items: center;
-      margin-top: 5px;
+      margin-top: 10px; /* more spacing between contacts */
+      gap: 10px;         /* space between input and remove button */
     }
 
     .emergency-group input {
       flex: 1;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .remove-btn {
+      background-color: #999;
+      font-size: 12px;
+      padding: 6px 10px;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      cursor: pointer;
+      width: 40px;
+      height: 30px;
+    }
+    .input_emergency{
+      width: 100%;
+
     }
   </style>
 </head>
@@ -117,7 +133,7 @@
       <label>Emergency Contact Numbers:</label>
       <div id="emergencyContainer">
         <div class="emergency-group">
-          <input type="tel" name="emergency" placeholder="Emergency contact number" required>
+          <input type="tel" class="input emergency"  name="emergency" placeholder="Emergency contact number" required>
         </div>
       </div>
       <button type="button" class="add-btn" id="addContact">+ Add Another Contact</button>
@@ -129,63 +145,58 @@
   </div>
 
   <script>
-    // ✨ Initialize Supabase
-    const SUPABASE_URL = "https://jsdmibfufpegusezbieh.supabase.co";  // <-- Replace this
-    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpzZG1pYmZ1ZnBlZ3VzZXpiaWVoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA0MTg3NTMsImV4cCI6MjA3NTk5NDc1M30.dJQuA5CUXhJuygYQxq2H79KgIHeMwUjTD7V1qDM2voQ";                  // <-- Replace this
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  const SUPABASE_URL = "https://mzypfqtaskdtohobobui.supabase.co";  
+  const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im16eXBmcXRhc2tkdG9ob2JvYnVpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA2MDExNjUsImV4cCI6MjA3NjE3NzE2NX0.2R2dy315Co006eq--MoHPJpaXDGY9V2TTszwh8y9bf0";  
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    const addBtn = document.getElementById("addContact");
-    const emergencyContainer = document.getElementById("emergencyContainer");
+  const addBtn = document.getElementById("addContact");
+  const emergencyContainer = document.getElementById("emergencyContainer");
 
-    addBtn.addEventListener("click", () => {
-      const div = document.createElement("div");
-      div.className = "emergency-group";
-      div.innerHTML = `
-        <input type="tel" name="emergency" placeholder="Emergency contact number" required>
-        <button type="button" class="remove-btn">X</button>
-      `;
-      emergencyContainer.appendChild(div);
-      div.querySelector(".remove-btn").addEventListener("click", () => div.remove());
-    });
+  addBtn.addEventListener("click", () => {
+    const div = document.createElement("div");
+    div.className = "emergency-group";
+    div.innerHTML = `
+      <input type="tel" name="emergency" placeholder="Emergency contact number" required>
+      <button type="button" class="remove-btn">X</button>
+    `;
+    emergencyContainer.appendChild(div);
+    div.querySelector(".remove-btn").addEventListener("click", () => div.remove());
+  });
 
-    document.getElementById("registrationForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
+  document.getElementById("registrationForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-      const name = document.getElementById("name").value.trim();
-      const number = document.getElementById("number").value.trim();
-      const emergencyInputs = document.querySelectorAll('input[name="emergency"]');
-      const emergencyNumbers = Array.from(emergencyInputs)
-        .map(i => i.value.trim())
-        .filter(v => v);
+    const name = document.getElementById("name").value.trim();
+    const phone = document.getElementById("number").value.trim();
 
-      if (!name || !number || emergencyNumbers.length === 0) {
-        alert("Please fill all fields!");
-        return;
-      }
+    const emergencyInputs = document.querySelectorAll('input[name="emergency"]');
+    const emergencyNumbers = Array.from(emergencyInputs).map(i => i.value.trim()).filter(v => v);
 
-      // 🚀 Insert into Supabase
-      const { data, error } = await supabase
-        .from('users')
-        .insert([{ 
-          name: name,
-          phone_number: number,
-          emergency_contacts: emergencyNumbers
-        }]);
+    if (!name || !phone || emergencyNumbers.length === 0) {
+      alert("⚠️ Please fill in all fields!");
+      return;
+    }
 
-      const msg = document.getElementById("successMsg");
-      if (error) {
-        alert("❌ Error: " + error.message);
-        console.error(error);
-      } else {
-        msg.style.display = "block";
-        document.getElementById("registrationForm").reset();
-        emergencyContainer.innerHTML = `
-          <div class="emergency-group">
-            <input type="tel" name="emergency" placeholder="Emergency contact number" required>
-          </div>`;
-        setTimeout(() => msg.style.display = "none", 3000);
-      }
-    });
+    const { data, error } = await supabase.from("profiles").insert([{
+      name,
+      phone,
+      emergency_contact: emergencyNumbers
+    }]);
+
+    const msg = document.getElementById("successMsg");
+    if (error) {
+      alert("❌ Error: " + error.message);
+      console.error(error);
+    } else {
+      msg.style.display = "block";
+      document.getElementById("registrationForm").reset();
+      emergencyContainer.innerHTML = `
+        <div class="emergency-group">
+          <input type="tel" name="emergency" placeholder="Emergency contact number" required>
+        </div>`;
+      setTimeout(() => msg.style.display = "none", 3000);
+    }
+  });
   </script>
 
 </body>
