@@ -1,4 +1,3 @@
-// Initialize the map at a default location (center of India)
 
     src="https://unpkg.com/@supabase/supabase-js@2"
     
