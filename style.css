@@ -60,6 +60,12 @@ main {
 }
 
 
+
+
+#profile-btn:hover {
+  background-color: #457b9d;
+}
+
 #status {
   position: absolute;
   top: 70px;
@@ -76,4 +82,17 @@ main {
 #status p {
   margin: 3px 0;
   font-size: 1rem;
+}
+#profile-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background-color: #457b9d;
+  color: white;
+  font-size: 1rem;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  z-index: 1001;
 }

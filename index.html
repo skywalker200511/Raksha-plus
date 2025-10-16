@@ -17,9 +17,12 @@
   </header>
 
   <main>
+
+    
+
     <div id="map"></div>
     <button id="sos-btn">🚨SOS🚨</button>
-
+    <button id="profile-btn">👤 Profile</button>
     <div id="status">
       <p><strong>Latitude:</strong> <span id="lat">--</span></p>
       <p><strong>Longitude:</strong> <span id="lon">--</span></p>
@@ -29,5 +32,15 @@
   </main>
 
   <script src="script.js"></script>
+  <script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('service-worker.js')
+      .then(() => console.log('Service Worker Registered'))
+      .catch(err => console.log('SW registration failed:', err));
+  }
+</script>
+
+
+
 </body>
 </html>

@@ -127,3 +127,11 @@ document.getElementById("sos-btn").addEventListener("click", async () => {
         alert("Could not get location: " + err.message);
     }
 });
+// Profile button click event
+document.getElementById("profile-btn").addEventListener("click", () => {
+  // Option 1: open a new page
+  window.location.href = "profile.html";
+
+  // Option 2 (if you want a popup instead of a new page):
+  // alert("Profile page coming soon!");
+});
