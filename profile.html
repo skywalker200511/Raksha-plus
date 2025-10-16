@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Women Safety App - Registration</title>
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #ffe5ec, #ffb3c6);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      background: white;
+      padding: 30px 40px;
+      border-radius: 20px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      width: 370px;
+      text-align: center;
+    }
+
+    .logo {
+      width: 100px;
+      height: 100px;
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      color: #e60073;
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-top: 10px;
+      text-align: left;
+      font-weight: 600;
+      color: #333;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+      outline: none;
+    }
+
+    button {
+      margin-top: 15px;
+      background-color: #e60073;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      width: 100%;
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    .add-btn {
+      background-color: #ff66a3;
+      font-size: 14px;
+      width: auto;
+      padding: 6px 10px;
+      margin-top: 10px;
+    }
+
+    .remove-btn {
+      background-color: #999;
+      font-size: 12px;
+      margin-left: 10px;
+      padding: 6px 8px;
+    }
+
+    .success {
+      margin-top: 15px;
+      color: green;
+      font-weight: 600;
+      display: none;
+    }
+
+    .emergency-group {
+      display: flex;
+      align-items: center;
+      margin-top: 5px;
+    }
+
+    .emergency-group input {
+      flex: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <img src="https://cdn-icons-png.flaticon.com/512/940/940490.png" alt="Women Safety Logo" class="logo">
+    <h2>Women Safety Registration</h2>
+
+    <form id="registrationForm">
+      <label for="name">Full Name:</label>
+      <input type="text" id="name" placeholder="Enter your name" required>
+
+      <label for="number">Phone Number:</label>
+      <input type="tel" id="number" placeholder="Enter your phone number" required>
+
+      <label>Emergency Contact Numbers:</label>
+      <div id="emergencyContainer">
+        <div class="emergency-group">
+          <input type="tel" name="emergency" placeholder="Emergency contact number" required>
+        </div>
+      </div>
+      <button type="button" class="add-btn" id="addContact">+ Add Another Contact</button>
+
+      <button type="submit">Register</button>
+    </form>
+
+    <div id="successMsg" class="success">✅ Registration Successful!</div>
+  </div>
+
+  <script>
+    // ✨ Initialize Supabase
+    const SUPABASE_URL = "https://jsdmibfufpegusezbieh.supabase.co";  // <-- Replace this
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpzZG1pYmZ1ZnBlZ3VzZXpiaWVoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA0MTg3NTMsImV4cCI6MjA3NTk5NDc1M30.dJQuA5CUXhJuygYQxq2H79KgIHeMwUjTD7V1qDM2voQ";                  // <-- Replace this
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    const addBtn = document.getElementById("addContact");
+    const emergencyContainer = document.getElementById("emergencyContainer");
+
+    addBtn.addEventListener("click", () => {
+      const div = document.createElement("div");
+      div.className = "emergency-group";
+      div.innerHTML = `
+        <input type="tel" name="emergency" placeholder="Emergency contact number" required>
+        <button type="button" class="remove-btn">X</button>
+      `;
+      emergencyContainer.appendChild(div);
+      div.querySelector(".remove-btn").addEventListener("click", () => div.remove());
+    });
+
+    document.getElementById("registrationForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById("name").value.trim();
+      const number = document.getElementById("number").value.trim();
+      const emergencyInputs = document.querySelectorAll('input[name="emergency"]');
+      const emergencyNumbers = Array.from(emergencyInputs)
+        .map(i => i.value.trim())
+        .filter(v => v);
+
+      if (!name || !number || emergencyNumbers.length === 0) {
+        alert("Please fill all fields!");
+        return;
+      }
+
+      // 🚀 Insert into Supabase
+      const { data, error } = await supabase
+        .from('users')
+        .insert([{ 
+          name: name,
+          phone_number: number,
+          emergency_contacts: emergencyNumbers
+        }]);
+
+      const msg = document.getElementById("successMsg");
+      if (error) {
+        alert("❌ Error: " + error.message);
+        console.error(error);
+      } else {
+        msg.style.display = "block";
+        document.getElementById("registrationForm").reset();
+        emergencyContainer.innerHTML = `
+          <div class="emergency-group">
+            <input type="tel" name="emergency" placeholder="Emergency contact number" required>
+          </div>`;
+        setTimeout(() => msg.style.display = "none", 3000);
+      }
+    });
+  </script>
+
+</body>
+</html>
