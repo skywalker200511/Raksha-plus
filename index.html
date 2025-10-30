@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", function () {
   // Check if the user already registered
   const profileCompleted = localStorage.getItem("profileCompleted");
 
-  if (profileCompleted) {
+  if (profileCompleted == true) {
     // If yes → go directly to map page
     window.location.href = "map.html";
   }
