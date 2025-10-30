@@ -17,8 +17,8 @@ document.addEventListener("DOMContentLoaded", function () {
   // Check if the user already registered
   const profileCompleted = localStorage.getItem("profileCompleted");
 
-  if (profileCompleted == true) {
-    // If yes → go directly to map page
+  if (profileCompleted == "true") {
+    
     window.location.href = "map.html";
   }
 });
@@ -265,8 +265,7 @@ function saveProfile(event) {
         form.reset();
         
         localStorage.setItem("userPhone", phone);
-
-        localStorage.setItem("profileCompleted", true);
+        localStorage.setItem("profileCompleted", "true");
         emergencyContainer.innerHTML = `
           <div class="emergency-group">
             <input type="tel" name="emergency" placeholder="Emergency contact number" required>
