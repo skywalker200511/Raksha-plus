@@ -240,12 +240,12 @@ function saveProfile(event) {
         return;
       }
 
+
+      
       try {
-        const formattedEmergencyNumbers = emergencyNumbers.map(num => {
-    num = num.replace(/\D/g, ""); // remove spaces or symbols
-    if (!num.startsWith("91")) num = "91" + num;
-    return num;
-  });
+        const formattedEmergency = emergencyNumbers.map(num =>
+    num.startsWith("91") ? num : `91${num}`
+  );
         // ✅ Insert data into Supabase table 'profiles'
         const { data, error } = await db
           .from("profiles")
@@ -253,7 +253,7 @@ function saveProfile(event) {
             {
               name: name,
               phone: phone,
-              emergency_contact: formattedEmergencyNumbers,
+              emergency_contact: formattedEmergency,
             },
           ]);
 
