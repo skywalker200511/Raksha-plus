@@ -3,11 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-
-  
   <title>Women Safety App - Registration</title>
-  
+
   <style>
     body {
       font-family: 'Poppins', sans-serif;
@@ -86,12 +83,11 @@
       display: none;
     }
 
-    /* Updated emergency group styles */
     .emergency-group {
       display: flex;
       align-items: center;
-      margin-top: 10px; /* more spacing between contacts */
-      gap: 10px;         /* space between input and remove button */
+      margin-top: 10px;
+      gap: 10px;
     }
 
     .emergency-group input {
@@ -114,10 +110,6 @@
       width: 40px;
       height: 30px;
     }
-    .input_emergency{
-      width: 100%;
-
-    }
   </style>
 </head>
 <body>
@@ -136,7 +128,7 @@
       <label>Emergency Contact Numbers:</label>
       <div id="emergencyContainer">
         <div class="emergency-group">
-          <input type="tel" class="input emergency"  name="emergency" placeholder="Emergency contact number" required>
+          <input type="tel" name="emergency" placeholder="Emergency contact number" required>
         </div>
       </div>
       <button type="button" class="add-btn" id="addContact">+ Add Another Contact</button>
@@ -147,7 +139,80 @@
     <div id="successMsg" class="success">✅ Registration Successful!</div>
   </div>
 
-  
-  <script src="script.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+    // ✅ Initialize Supabase client
+    const { createClient } = supabase;
+    const SUPABASE_URL = "https://mzypfqtaskdtohobobui.supabase.co";  // 🔧 Replace this
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im16eXBmcXRhc2tkdG9ob2JvYnVpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA2MDExNjUsImV4cCI6MjA3NjE3NzE2NX0.2R2dy315Co006eq--MoHPJpaXDGY9V2TTszwh8y9bf0";                    // 🔧 Replace this
+    const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const addBtn = document.getElementById("addContact");
+      const emergencyContainer = document.getElementById("emergencyContainer");
+      const form = document.getElementById("registrationForm");
+      const successMsg = document.getElementById("successMsg");
+
+      // ✅ Add new emergency contact input
+      addBtn.addEventListener("click", () => {
+        const div = document.createElement("div");
+        div.className = "emergency-group";
+        div.innerHTML = `
+          <input type="tel" name="emergency" placeholder="Emergency contact number" required>
+          <button type="button" class="remove-btn">X</button>
+        `;
+        emergencyContainer.appendChild(div);
+
+        div.querySelector(".remove-btn").addEventListener("click", () => div.remove());
+      });
+
+      // ✅ Handle form submission and save to Supabase
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const name = document.getElementById("name").value.trim();
+        const phone = document.getElementById("number").value.trim();
+        const emergencyInputs = document.querySelectorAll('input[name="emergency"]');
+        const emergencyNumbers = Array.from(emergencyInputs).map(i => i.value.trim()).filter(v => v);
+
+        if (!name || !phone || emergencyNumbers.length === 0) {
+          alert("⚠️ Please fill in all fields!");
+          return;
+        }
+
+        try {
+          // ✅ Insert data into Supabase table 'profiles'
+          const { data, error } = await db
+            .from("profiles")
+            .insert([
+              {
+                name: name,
+                phone: phone,
+                emergency_contact: emergencyNumbers
+              }
+            ]);
+
+          if (error) throw error;
+
+          console.log("✅ Data saved:", data);
+          successMsg.textContent = "✅ Registration Successful!";
+          successMsg.style.display = "block";
+          form.reset();
+
+          emergencyContainer.innerHTML = `
+            <div class="emergency-group">
+              <input type="tel" name="emergency" placeholder="Emergency contact number" required>
+            </div>
+          `;
+
+          setTimeout(() => successMsg.style.display = "none", 3000);
+        } catch (err) {
+          console.error("❌ Error saving data:", err.message);
+          alert("Error saving to database. Check console for details.");
+        }
+      });
+    });
+  </script>
 </body>
 </html>
