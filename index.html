@@ -1,45 +1,227 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
- 
-
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Raksha Plus</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#e63946">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <title>Women Safety App - Registration</title>
+
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #ffe5ec, #ffb3c6);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      background: white;
+      padding: 30px 40px;
+      border-radius: 20px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      width: 370px;
+      text-align: center;
+    }
+
+    .logo {
+      width: 100px;
+      height: 100px;
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      color: #e60073;
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-top: 10px;
+      text-align: left;
+      font-weight: 600;
+      color: #333;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+      outline: none;
+    }
+
+    button {
+      margin-top: 15px;
+      background-color: #e60073;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      width: 100%;
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    .add-btn {
+      background-color: #ff66a3;
+      font-size: 14px;
+      width: auto;
+      padding: 6px 10px;
+      margin-top: 10px;
+    }
+
+    .success {
+      margin-top: 15px;
+      color: green;
+      font-weight: 600;
+      display: none;
+    }
+
+    .emergency-group {
+      display: flex;
+      align-items: center;
+      margin-top: 10px;
+      gap: 10px;
+    }
+
+    .emergency-group input {
+      flex: 1;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .remove-btn {
+      background-color: #999;
+      font-size: 12px;
+      padding: 6px 10px;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      cursor: pointer;
+      width: 40px;
+      height: 30px;
+    }
+  </style>
 </head>
-
 <body>
-  <header class="title">
-    <h1>Raksha Plus</h1>
-  </header>
 
-  <main>
+  <div class="container">
+    <img src="https://cdn-icons-png.flaticon.com/512/940/940490.png" alt="Women Safety Logo" class="logo">
+    <h2>Women Safety Registration</h2>
 
-    
+    <form id="registrationForm">
+      <label for="name">Full Name:</label>
+      <input type="text" id="name" placeholder="Enter your name" required>
 
-    <div id="map"></div>
-    <button id="sos-btn">🚨SOS🚨</button>
-    <button id="profile-btn">👤 Profile</button>
-    <div id="status">
-      <p><strong>Latitude:</strong> <span id="lat">--</span></p>
-      <p><strong>Longitude:</strong> <span id="lon">--</span></p>
-    </div>
+      <label for="number">Phone Number:</label>
+      <input type="tel" id="number" placeholder="Enter your phone number" required>
 
-    
-  </main>
-  
-  <script src="script.js"></script>
+      <label>Emergency Contact Numbers:</label>
+      <div id="emergencyContainer">
+        <div class="emergency-group">
+          <input type="tel" name="emergency" placeholder="Emergency contact number" required>
+        </div>
+      </div>
+      <button type="button" class="add-btn" id="addContact">+ Add Another Contact</button>
+
+      <button type="submit">Register</button>
+    </form>
+
+    <div id="successMsg" class="success">✅ Registration Successful!</div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('service-worker.js')
-      .then(() => console.log('Service Worker Registered'))
-      .catch(err => console.log('SW registration failed:', err));
-  }
+  // ✅ Initialize Supabase client
+  const { createClient } = supabase;
+  const SUPABASE_URL = "https://mzypfqtaskdtohobobui.supabase.co";
+  const SUPABASE_ANON_KEY =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im16eXBmcXRhc2tkdG9ob2JvYnVpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA2MDExNjUsImV4cCI6MjA3NjE3NzE2NX0.2R2dy315Co006eq--MoHPJpaXDGY9V2TTszwh8y9bf0";
+
+  const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const addBtn = document.getElementById("addContact");
+    const emergencyContainer = document.getElementById("emergencyContainer");
+    const form = document.getElementById("registrationForm");
+    const successMsg = document.getElementById("successMsg");
+
+    // ✅ Add new emergency contact input
+    addBtn.addEventListener("click", () => {
+      const div = document.createElement("div");
+      div.className = "emergency-group";
+      div.innerHTML = `
+        <input type="tel" name="emergency" placeholder="Emergency contact number" required>
+        <button type="button" class="remove-btn">X</button>
+      `;
+      emergencyContainer.appendChild(div);
+
+      div.querySelector(".remove-btn").addEventListener("click", () => div.remove());
+    });
+
+    // ✅ Handle form submission and save to Supabase
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById("name").value.trim();
+      const phone = document.getElementById("number").value.trim();
+      const emergencyInputs = document.querySelectorAll('input[name="emergency"]');
+      const emergencyNumbers = Array.from(emergencyInputs)
+        .map((i) => i.value.trim())
+        .filter((v) => v);
+
+      if (!name || !phone || emergencyNumbers.length === 0) {
+        alert("⚠️ Please fill in all fields!");
+        return;
+      }
+
+      try {
+        // ✅ Insert data into Supabase table 'profiles'
+        const { data, error } = await db
+          .from("profiles")
+          .insert([
+            {
+              name: name,
+              phone: phone,
+              emergency_contact: emergencyNumbers,
+            },
+          ]);
+
+        if (error) throw error;
+
+        console.log("✅ Data saved:", data);
+        successMsg.textContent = "✅ Registration Successful!";
+        successMsg.style.display = "block";
+        form.reset();
+
+        emergencyContainer.innerHTML = `
+          <div class="emergency-group">
+            <input type="tel" name="emergency" placeholder="Emergency contact number" required>
+          </div>
+        `;
+
+        // ✅ Redirect to map page after short delay
+        setTimeout(() => {
+          window.location.href = "map.html"; // change if your map page has a different name
+        }, 2000); // waits 2 seconds before redirect
+
+      } catch (err) {
+        console.error("❌ Error saving data:", err.message);
+        alert("Error saving to database. Check console for details.");
+      }
+    });
+  });
 </script>
+
 </body>
 </html>
