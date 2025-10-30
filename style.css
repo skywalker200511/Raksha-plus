@@ -83,16 +83,49 @@ main {
   margin: 3px 0;
   font-size: 1rem;
 }
-#profile-btn {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  background-color: #457b9d;
+#report-btn {
+  background-color: #ff9800;
   color: white;
-  font-size: 1rem;
-  padding: 10px 20px;
+  padding: 10px 18px;
   border: none;
   border-radius: 10px;
+  font-size: 16px;
+  margin-top: 100px;
   cursor: pointer;
-  z-index: 1001;
+  position: absolute;
+  z-index: 100;
+  margin-left: 20px;
+}
+
+#report-options {
+  margin-left: 20px;
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 150px;
+  z-index: 100;
+}
+
+.hidden {
+  display: none;
+}
+
+.report-option {
+  background-color: #f4f4f4;
+  border: 1px solid #ccc;
+  padding: 8px 15px;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.report-option[data-zone="yellow"]:hover {
+  background-color: #fff176;
+}
+
+.report-option[data-zone="red"]:hover {
+  background-color: #ef5350;
+  color: white;
 }
