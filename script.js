@@ -102,11 +102,35 @@ document.getElementById("sos-btn").addEventListener("click", async () => {
 
     const message = `🚨 SOS! I need help! My location: https://www.google.com/maps?q=${lat},${lon}`;
 
+    async function getEmergencyContacts() {
+  const userPhone = localStorage.getItem("userPhone"); // stored during registration
+  if (!userPhone) {
+    console.warn("⚠️ No user phone found — please register first!");
+    return [];
+  }
+
+  const { data, error } = await db
+    .from("profiles")
+    .select("emergency_contact")
+    .eq("phone", userPhone)
+    .single();
+
+  if (error) {
+    console.error("❌ Error fetching contacts:", error.message);
+    return [];
+  }
+
+  console.log("✅ Fetched contacts:", data.emergency_contact);
+  return data.emergency_contact || [];
+}
+
+
+
+
+
     // ✅ Emergency contacts (add as many as needed)
-    const emergencyContacts = [
-      "918779759296",
-      "917304402005"
-    ];
+    const emergencyContacts = await getEmergencyContacts();
+
 
     // Send to each contact with a small delay
     for (const number of emergencyContacts) {
@@ -126,5 +150,5 @@ document.getElementById("sos-btn").addEventListener("click", async () => {
 // PROFILE BUTTON
 // =====================
 document.getElementById("profile-btn").addEventListener("click", () => {
-  window.location.href = "profile.html";
+  window.location.href = "index.html";
 });

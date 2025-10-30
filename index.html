@@ -258,6 +258,9 @@ function saveProfile(event) {
         successMsg.textContent = "✅ Registration Successful!";
         successMsg.style.display = "block";
         form.reset();
+        
+        localStorage.setItem("userPhone", phone);
+
         localStorage.setItem("profileCompleted", true);
         emergencyContainer.innerHTML = `
           <div class="emergency-group">
