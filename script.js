@@ -102,19 +102,20 @@ document.getElementById("sos-btn").addEventListener("click", async () => {
 
     const message = `🚨 SOS! I need help! My location: https://www.google.com/maps?q=${lat},${lon}`;
 
-    //emergency contact
+    // ✅ Emergency contacts (add as many as needed)
     const emergencyContacts = [
       "918779759296",
-      "917304402005" 
-      
+      "917304402005"
     ];
 
-    emergencyContacts.forEach(number => {
+    // Send to each contact with a small delay
+    for (const number of emergencyContacts) {
       window.open(`https://wa.me/${number}?text=${encodeURIComponent(message)}`, '_blank');
-    });
+      await new Promise(resolve => setTimeout(resolve, 1000)); // 1 sec delay
+    }
 
     if (navigator.vibrate) navigator.vibrate(500);
-    alert("SOS message ready to send on WhatsApp!");
+    alert("✅ SOS message opened for all emergency contacts on WhatsApp!");
 
   } catch (err) {
     alert("Could not get location: " + err.message);
