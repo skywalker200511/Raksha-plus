@@ -102,9 +102,10 @@ document.getElementById("sos-btn").addEventListener("click", async () => {
 
     const message = `🚨 SOS! I need help! My location: https://www.google.com/maps?q=${lat},${lon}`;
 
-    // Example emergency contact numbers (hardcoded for now)
+    //emergency contact
     const emergencyContacts = [
-      "918779759296" // replace with actual numbers
+      "918779759296",
+      "917304402005" 
       
     ];
 
