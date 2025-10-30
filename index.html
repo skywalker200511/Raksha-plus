@@ -13,15 +13,7 @@
   }
   </script>
   <script>
-document.addEventListener("DOMContentLoaded", function () {
-  // Check if the user already registered
-  const profileCompleted = localStorage.getItem("profileCompleted");
 
-  if (profileCompleted == "true") {
-    
-    window.location.href = "map.html";
-  }
-});
 
 // When the form is submitted
 function saveProfile(event) {
@@ -160,7 +152,7 @@ function saveProfile(event) {
 
   <div class="container">
     <img src="https://cdn-icons-png.flaticon.com/512/940/940490.png" alt="Women Safety Logo" class="logo">
-    <h2>Women Safety Registration</h2>
+    <h2>Register for Raksha+</h2>
 
     <form id="registrationForm">
       <label for="name">Full Name:</label>
@@ -192,6 +184,17 @@ function saveProfile(event) {
       .then(() => console.log('Service Worker Registered'))
       .catch(err => console.log('SW registration failed:', err));
   }
+
+
+  document.addEventListener("DOMContentLoaded", function () {
+  // Check if the user already registered
+  const profileCompleted = localStorage.getItem("profileCompleted");
+
+  if (profileCompleted == "true") {
+    
+    window.location.href = "map.html";
+  }
+});
 
 
 
