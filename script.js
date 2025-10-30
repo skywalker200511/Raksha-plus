@@ -104,8 +104,8 @@ document.getElementById("sos-btn").addEventListener("click", async () => {
 
     // Example emergency contact numbers (hardcoded for now)
     const emergencyContacts = [
-      "918779759296", // replace with actual numbers
-      "919876543210"
+      "918779759296"
+      
     ];
 
     emergencyContacts.forEach(number => {
