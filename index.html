@@ -142,6 +142,16 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <script>
+    if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('service-worker.js')
+      .then(() => console.log('Service Worker Registered'))
+      .catch(err => console.log('SW registration failed:', err));
+  }
+
+
+
+
+
   // ✅ Initialize Supabase client
   const { createClient } = supabase;
   const SUPABASE_URL = "https://mzypfqtaskdtohobobui.supabase.co";
@@ -222,12 +232,6 @@
     });
   });
 </script>
-<script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('service-worker.js')
-      .then(() => console.log('Service Worker Registered'))
-      .catch(err => console.log('SW registration failed:', err));
-  }
-</script>
+
 </body>
 </html>
