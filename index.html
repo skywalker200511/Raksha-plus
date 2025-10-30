@@ -12,6 +12,43 @@
       .catch(err => console.log('SW registration failed:', err));
   }
   </script>
+  <script>
+document.addEventListener("DOMContentLoaded", function () {
+  // Check if the user already registered
+  const profileCompleted = localStorage.getItem("profileCompleted");
+
+  if (profileCompleted) {
+    // If yes → go directly to map page
+    window.location.href = "map.html";
+  }
+});
+
+// When the form is submitted
+function saveProfile(event) {
+  event.preventDefault();
+
+  const name = document.getElementById("name").value;
+  const phone = document.getElementById("phone").value;
+  const emergency = document.getElementById("emergency_contact").value;
+
+  // Validate
+  if (!name || !phone || !emergency) {
+    alert("Please fill all fields!");
+    return;
+  }
+
+  // Save data locally
+  localStorage.setItem("profileCompleted", true);
+  localStorage.setItem("name", name);
+  localStorage.setItem("phone", phone);
+  localStorage.setItem("emergency_contact", emergency);
+
+  // (Optional) Send data to Supabase here
+
+  // Redirect to map
+  window.location.href = "map.html";
+}
+</script>
   <style>
     body {
       font-family: 'Poppins', sans-serif;
@@ -144,6 +181,7 @@
     </form>
 
     <div id="successMsg" class="success">✅ Registration Successful!</div>
+
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -220,7 +258,7 @@
         successMsg.textContent = "✅ Registration Successful!";
         successMsg.style.display = "block";
         form.reset();
-
+        localStorage.setItem("profileCompleted", true);
         emergencyContainer.innerHTML = `
           <div class="emergency-group">
             <input type="tel" name="emergency" placeholder="Emergency contact number" required>
